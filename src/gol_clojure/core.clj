@@ -25,7 +25,9 @@
 	(case (is-alive current-cell-status)
 		true
 			(if (is-lonely neighbours-status) dead 
-				(if (is-over-populated neighbours-status) dead alive))))
+				(if (is-over-populated neighbours-status) dead current-cell-status))
+		false
+			(if (= (cell-score neighbours-status) 3) alive current-cell-status)))
 
 (defn -main
   "I don't do a whole lot ... yet."

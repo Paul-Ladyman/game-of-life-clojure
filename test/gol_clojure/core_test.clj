@@ -10,7 +10,15 @@
   (testing "Live cell with two neighbours survives"
     (is (= 1 (next-cell-status 1 [1 1 0 0 0 0 0 0]))))
   (testing "Live cell with three neighbours survives"
-    (is (= 1 (next-cell-status 1 [1 1 1 0 0 0 0 0])))))
+    (is (= 1 (next-cell-status 1 [1 1 1 0 0 0 0 0]))))
+  (testing "Dead cell with three neighbours becomes alive"
+    (is (= 1 (next-cell-status 0 [1 1 1 0 0 0 0 0]))))
+  (testing "Dead cell with two neighbours remains dead"
+    (is (= 0 (next-cell-status 0 [1 1 0 0 0 0 0 0]))))
+  (testing "Lonely dead cell remains dead"
+    (is (= 0 (next-cell-status 0 [0 0 0 0 0 0 0 0]))))
+  (testing "Over crowded dead cell remains dead"
+    (is (= 0 (next-cell-status 0 [1 1 1 1 0 0 0 0])))))
 
 (deftest is-alive-test
 	(testing "true if cell status is 1"
