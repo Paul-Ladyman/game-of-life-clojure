@@ -51,3 +51,14 @@
 (deftest cell-score-test
 	(testing "Adds values of neighbours"
 		(is (= 5 (cell-score [1 1 1 1 1 0 0 0])))))
+
+(deftest get-neighbours-test
+	(println "hello")
+	(let [board (vec (repeat 5 (vec (repeat 5 1))))]
+		(testing "Returns each neighbour of a cell"
+			(is (= [1 1 1 1 1 1 1 1] (get-neighbours 2 2 board))))
+		(println "============")
+		(testing "Returns 0 for out of bound neighbours"
+			(is (= [0 0 0 1 1 1 1 1] (get-neighbours 0 2 board))))
+		(testing "Returns neighbours for corner cells"
+			(is (= [0 0 0 0 1 0 1 1] (get-neighbours 0 0 board))))))

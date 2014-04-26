@@ -7,7 +7,7 @@
 (def dead 0)
 
 (defn cell-score
-	[neighbours]
+	[neighbours] 
 	(reduce + neighbours))
 
 (defn is-alive
@@ -31,9 +31,52 @@
 		false
 			(if (= (cell-score neighbours-status) 3) alive current-cell-status)))
 
+
+(defn get-cell
+	[y x board]	
+	(get (get board y) x))
+
+(defn get-neighbour
+	[y x board]
+	(case (or (< y 0) (> y 19))
+		true dead
+		false 
+			(case (or (< x 0) (> x 19))
+				true dead
+				false (get-cell y x board))))
+
+(defn get-neighbours
+	[y x board]
+	(vector
+		(get-neighbour (- y 1) (- x 1) board)
+		(get-neighbour (- y 1) x board)
+		(get-neighbour (- y 1) (+ x 1) board)
+
+		(get-neighbour y (- x 1) board)
+		(get-neighbour y (+ x 1) board)
+
+		(get-neighbour (+ y 1) (- x 1) board)
+		(get-neighbour (+ y 1) x board)
+		(get-neighbour (+ y 1) (+ x 1) board)
+		))
+
+(defn next-generation
+	[board]
+	(vec (map-indexed
+		(fn [y row]
+			(vec (map-indexed
+				(fn [x cell]
+					(next-cell-status cell (get-neighbours y x board)))
+				row)))
+		board)))
+
 (defn print-row
-	[column]
-	(join " " column))
+	[row]
+	(def painted-row
+		(vec (map
+			(fn [x] (if (= x 0) "-" "*"))
+		row)))
+	(join " " painted-row))
 
 (defn print-board
 	[board height]
@@ -41,7 +84,7 @@
 
 (defn empty-board
 	[width height]
-	(vec (repeat width (vec (repeat height 0)))))
+	(vec (repeat width (vec (repeat height dead)))))
 
 (defn seed-glider
 	[board]
@@ -49,14 +92,30 @@
 		(assoc
 			(assoc board 1 (assoc (board 1) 2 1))
 		2 (assoc (board 2) 3 1))
-	1 1 2 1 3 1))
+	 3 (assoc (board 3) 1 1 2 1 3 1))
+	)
 
 (defn seed-board
 	[board seed]
 	(case seed
 		:glider (seed-glider board)))
 
+(defn clear-screen
+  "Clears the screen, using ANSI control characters."
+  []
+  (let [esc (char 27)]
+    (print (str esc "[2J"))     ; ANSI: clear screen
+    (print (str esc "[;H"))))   ; ANSI: move cursor to top left corner of screen
+
+(defn game-of-life
+	[board]
+	(print-board board 20)
+	(Thread/sleep 150)
+	(clear-screen)
+	(game-of-life (next-generation board)))
+
 (defn -main
   [& args]
-  (print-board (seed-board (empty-board 50 50) :glider) 50))
+  (def board (seed-board (empty-board 20 20) :glider))
+  (game-of-life board))
 
