@@ -6,4 +6,5 @@
   :dependencies [[org.clojure/clojure "1.5.1"]]
   :main ^:skip-aot gol-clojure.core
   :target-path "target/%s"
-  :profiles {:uberjar {:aot :all}})
+  :profiles {:uberjar {:aot :all}}
+  :resource-paths ["src/gol_clojure/resources"])

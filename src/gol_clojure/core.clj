@@ -3,6 +3,11 @@
 
 (use '[clojure.string :only (join split)])
 
+(require '[clojure.java.io :as io])
+
+(def board-height 50)
+(def board-width 50)
+(def game-speed 100)
 (def alive 1)
 (def dead 0)
 
@@ -38,10 +43,10 @@
 
 (defn get-neighbour
 	[y x board]
-	(case (or (< y 0) (> y 19))
+	(case (or (< y 0) (> y (- board-height 1)))
 		true dead
 		false 
-			(case (or (< x 0) (> x 19))
+			(case (or (< x 0) (> x (- board-width 1)))
 				true dead
 				false (get-cell y x board))))
 
@@ -82,24 +87,6 @@
 	[board height]
 	(doseq [y (range height)] (println (print-row (board y)))))
 
-(defn empty-board
-	[width height]
-	(vec (repeat width (vec (repeat height dead)))))
-
-(defn seed-glider
-	[board]
-	(assoc
-		(assoc
-			(assoc board 1 (assoc (board 1) 2 1))
-		2 (assoc (board 2) 3 1))
-	 3 (assoc (board 3) 1 1 2 1 3 1))
-	)
-
-(defn seed-board
-	[board seed]
-	(case seed
-		:glider (seed-glider board)))
-
 (defn clear-screen
   "Clears the screen, using ANSI control characters."
   []
@@ -109,13 +96,34 @@
 
 (defn game-of-life
 	[board]
-	(print-board board 20)
-	(Thread/sleep 150)
+	(print-board board board-height)
+	(Thread/sleep game-speed)
 	(clear-screen)
 	(game-of-life (next-generation board)))
 
+(defn read-seed
+	[key]
+	(def file (case key
+		:oscillators "seeds/oscillators.csv"
+		:gliders "seeds/gliders.csv"
+		:gliders2 "seeds/gliders2.csv"
+		:glidergun "seeds/glidergun.csv"
+		:bomber "seeds/bomber.csv"))
+	(def seed (slurp (io/resource file)))
+	(def rows (split seed #"\n"))
+	(vec (map
+		(fn [row]
+			(vec (map
+				(fn [cell] (if (= cell "0") 0 1))
+			(split row #","))))
+	rows)))
+
 (defn -main
   [& args]
-  (def board (seed-board (empty-board 20 20) :glider))
-  (game-of-life board))
-
+  (def seed (first args))
+  (case seed
+  	"oscillators" (game-of-life (read-seed :oscillators))
+  	"gliders" (game-of-life (read-seed :gliders))
+  	"gliders2" (game-of-life (read-seed :gliders2))
+  	"glidergun" (game-of-life (read-seed :glidergun))
+  	"bomber" (game-of-life (read-seed :bomber))))
