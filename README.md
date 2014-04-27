@@ -1,36 +1,27 @@
 # gol-clojure
 
-FIXME: description
+Conway's Game of Life implemented in Clojure.
 
 ## Installation
 
-Download from http://example.com/FIXME.
+Install Leiningen (http://leiningen.org/). The easiest way is with Homebrew:
+    
+    brew install leiningen
+    
+Checkout the code:
+
+    git clone https://github.com/Paul-Bod/game-of-life-clojure.git
 
 ## Usage
 
-FIXME: explanation
+Use leiningen to run the project and start game of life. The program accepts a command line argument corresponding to one of a series of seed patterns it has available. The arguments available are:
 
-    $ java -jar gol-clojure-0.1.0-standalone.jar [args]
+- oscillators
+- gliders
+- gliders2
+- glidergun
+- bomber
 
-## Options
+For example:
 
-FIXME: listing of options this app accepts.
-
-## Examples
-
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
-
-## License
-
-Copyright © 2014 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+    lein run glidergun
