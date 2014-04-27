@@ -10,7 +10,7 @@ Install Leiningen (http://leiningen.org/). The easiest way is with Homebrew:
     
 Checkout the code:
 
-    git clone https://github.com/Paul-Bod/game-of-life-clojure.git
+    git clone https://github.com/Paul-Bod/game-of-life-clojure.git game-of-life-clojure
 
 ## Usage
 
@@ -22,6 +22,6 @@ Use leiningen to run the project and start game of life. The program accepts a c
 - glidergun
 - bomber
 
-For example:
+For example (from within the root game-of-life-clojure directory):
 
     lein run glidergun
